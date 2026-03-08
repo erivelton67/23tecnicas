@@ -4,11 +4,11 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quiz 18+</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Montserrat+Alternates:ital,wght@1,700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      height: 100%; min-height: 100dvh;
+      min-height: 100dvh;
       background: #000;
       font-family: 'Montserrat', sans-serif;
     }
@@ -21,6 +21,7 @@
       padding: 0 24px;
     }
 
+    /* BARRA PROGRESSO */
     .progress-wrap {
       position: fixed;
       top: 12px; left: 20px; right: 20px;
@@ -31,28 +32,37 @@
       overflow: hidden;
     }
     .progress-fill {
-      height: 100%; width: 4%;
+      height: 100%;
       background: #c0121e;
       border-radius: 99px;
+      transition: width .5s ease;
     }
 
-    #wrap {
-      display: flex;
+    /* TELAS */
+    .screen {
+      display: none;
       flex-direction: column;
       align-items: center;
       width: 100%;
       max-width: 420px;
       text-align: center;
       gap: 22px;
-      animation: fadeUp .5s ease both;
+      animation: fadeUp .45s ease both;
+      padding: 48px 0 32px;
+    }
+    .screen.active { display: flex; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── TELA 1 ── */
     .logo {
       width: 320px;
       max-width: 85vw;
       height: auto;
     }
-
     .aviso {
       font-size: 1.6rem;
       font-weight: 900;
@@ -61,6 +71,55 @@
       white-space: nowrap;
     }
 
+    /* ── TELA 2 ── */
+    .q-title {
+      font-size: 1.55rem;
+      font-weight: 900;
+      color: #c0121e;
+      line-height: 1.25;
+    }
+    .q-sub {
+      font-size: .95rem;
+      font-weight: 700;
+      font-style: italic;
+      color: #fff;
+      line-height: 1.4;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+    .card {
+      background: #b81020;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 4px 12px rgba(0,0,0,.4);
+      display: flex;
+      flex-direction: column;
+    }
+    .card:active { transform: scale(.96); }
+    .card:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.5); }
+    .card img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+    .card-label {
+      padding: 10px 10px 14px;
+      font-size: .88rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+      text-align: left;
+    }
+
+    /* BOTÃO GERAL */
     .btn {
       width: 100%;
       padding: 20px;
@@ -82,37 +141,68 @@
       transform: translateY(5px);
       box-shadow: 0 2px 0 #7a0a15, 0 4px 8px rgba(0,0,0,.4);
     }
-
     @keyframes pulsar {
       0%,100% { box-shadow: 0 7px 0 #7a0a15, 0 10px 22px rgba(180,10,25,.3); }
       50%      { box-shadow: 0 7px 0 #7a0a15, 0 10px 30px rgba(180,10,25,.55); }
     }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </head>
 <body>
-  <div class="progress-wrap"><div class="progress-fill"></div></div>
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progress" style="width:4%"></div>
+  </div>
 
-  <div id="wrap">
+  <!-- ══ TELA 1 — IDADE ══ -->
+  <div class="screen active" id="s1">
     <img class="logo"
       src="https://doram.shop/wp-content/uploads/2026/03/lg-QOQjf-gemini-generated-image-rnsg4trnsg4trnsg.webp"
       alt="Logo"/>
-
     <p class="aviso">
       Você deve ter 18 anos ou<br>mais para continuar!
     </p>
-
-    <button class="btn" onclick="confirmar()">
+    <button class="btn" onclick="goTo('s2', 14)">
       TENHO 18 ANOS OU MAIS!
     </button>
   </div>
 
+  <!-- ══ TELA 2 — OBJETIVO ══ -->
+  <div class="screen" id="s2">
+    <p class="q-title">Qual é o seu Principal<br>Objetivo aqui? 😈</p>
+    <p class="q-sub">Você vai aprender tudo na Prática com<br>vídeos Explícitos!</p>
+
+    <div class="cards-grid">
+      <div class="card" onclick="goTo('s3', 28)">
+        <img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-01.png" alt="Técnicas Orgásmicas"/>
+        <div class="card-label">Aprender as 23 Técnicas Orgásmicas</div>
+      </div>
+      <div class="card" onclick="goTo('s3', 28)">
+        <img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-02.png" alt="Squirt"/>
+        <div class="card-label">Fazer qualquer Mulher ter um Squirt (Jorrar)</div>
+      </div>
+      <div class="card" onclick="goTo('s3', 28)">
+        <img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-03.png" alt="Bom de Cama"/>
+        <div class="card-label">Ser um Homem Bom de Cama 😌</div>
+      </div>
+      <div class="card" onclick="goTo('s3', 28)">
+        <img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-04.png" alt="Múltiplos Orgasmos"/>
+        <div class="card-label">Proporcionar Múltiplos Orgasmos 💦</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PRÓXIMAS TELAS VIRÃO AQUI ══ -->
+  <div class="screen" id="s3">
+    <p style="color:#fff;font-size:1.2rem;font-weight:800">✅ Próxima tela em breve!<br><span style="color:#888;font-size:.85rem">Mande os próximos prints 👇</span></p>
+  </div>
+
   <script>
-    function confirmar() {
-      // próxima tela conectada aqui
+    function goTo(id, progress) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const next = document.getElementById(id);
+      next.classList.add('active');
+      next.style.animation = 'none';
+      requestAnimationFrame(() => { next.style.animation = ''; });
+      document.getElementById('progress').style.width = progress + '%';
     }
   </script>
 </body>
