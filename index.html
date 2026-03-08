@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 18+</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: #000;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px 20px;
+    }
+
+    #wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      gap: 28px;
+      animation: fadeUp .5s ease both;
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 5px;
+      background: #222;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 4%;
+      background: #e8192c;
+      border-radius: 99px;
+    }
+
+    .logo {
+      width: 280px;
+      height: auto;
+      display: block;
+    }
+
+    .aviso {
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1.5;
+      color: #fff;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 18px;
+      background: #e8192c;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: .9rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #9a0f1c, 0 8px 12px rgba(0,0,0,.4);
+      animation: pulsar 2.2s ease-in-out infinite;
+      transition: transform .1s, box-shadow .1s;
+    }
+
+    .btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #9a0f1c, 0 3px 6px rgba(0,0,0,.3);
+    }
+
+    @keyframes pulsar {
+      0%, 100% { box-shadow: 0 6px 0 #9a0f1c, 0 8px 18px rgba(232,25,44,.35); }
+      50%       { box-shadow: 0 6px 0 #9a0f1c, 0 8px 28px rgba(232,25,44,.6); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <div class="progress-wrap">
+      <div class="progress-fill"></div>
+    </div>
+
+    <img class="logo"
+      src="https://doram.shop/wp-content/uploads/2026/03/lg-QOQjf-gemini-generated-image-rnsg4trnsg4trnsg.webp"
+      alt="Logo"/>
+
+    <p class="aviso">
+      Você deve ter 18 anos ou mais<br>para continuar!
+    </p>
+
+    <button class="btn" onclick="confirmar()">
+      TENHO 18 ANOS OU MAIS!
+    </button>
+  </div>
+
+  <script>
+    function confirmar() {
+      // próxima tela será conectada aqui
+    }
+  </script>
+</body>
+</html>
