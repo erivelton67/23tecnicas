@@ -2,608 +2,248 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Quiz 18+</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Montserrat+Alternates:ital,wght@1,700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      min-height: 100dvh;
-      background: #000;
-      font-family: 'Montserrat', sans-serif;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100dvh;
-      padding: 0 24px;
-    }
-
-    /* BARRA PROGRESSO */
-    .progress-wrap {
-      position: fixed;
-      top: 12px; left: 20px; right: 20px;
-      height: 5px;
-      background: #2a2a2a;
-      border-radius: 99px;
-      z-index: 999;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: #c0121e;
-      border-radius: 99px;
-      transition: width .5s ease;
-    }
-
-    /* TELAS */
-    .screen {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-      gap: 22px;
-      animation: fadeUp .45s ease both;
-      padding: 48px 0 32px;
-    }
+    html { -webkit-text-size-adjust: 100%; }
+    html, body { min-height: 100dvh; background: #000; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+    body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100dvh; padding: 0 20px; }
+    .progress-wrap { position: fixed; top: 10px; left: 16px; right: 16px; height: 5px; background: #2a2a2a; border-radius: 99px; z-index: 999; overflow: hidden; }
+    .progress-fill { height: 100%; background: #c0121e; border-radius: 99px; transition: width .5s ease; width: 4%; }
+    .screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 420px; text-align: center; gap: 18px; animation: fadeUp .4s ease both; padding: 52px 0 28px; }
     .screen.active { display: flex; }
-
-    /* TELA VENDAS — ocupa largura total */
-    #s23 {
-      max-width: 100%;
-      width: calc(100% + 48px);
-      margin-left: -24px;
-      margin-right: -24px;
-      padding: 0 !important;
-      gap: 0 !important;
-      align-items: stretch;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── TELA 1 ── */
-    .logo {
-      width: 320px;
-      max-width: 85vw;
-      height: auto;
-    }
-    .aviso {
-      font-size: 1.6rem;
-      font-weight: 900;
-      line-height: 1.35;
-      color: #fff;
-      white-space: nowrap;
-    }
-
-    /* ── TELA 2 ── */
-    .q-title {
-      font-size: 1.55rem;
-      font-weight: 900;
-      color: #c0121e;
-      line-height: 1.25;
-    }
-    .q-sub {
-      font-size: .95rem;
-      font-weight: 700;
-      font-style: italic;
-      color: #fff;
-      line-height: 1.4;
-    }
-    .cards-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      width: 100%;
-    }
-    .card {
-      background: #b81020;
-      border-radius: 14px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform .15s, box-shadow .15s;
-      box-shadow: 0 4px 12px rgba(0,0,0,.4);
-      display: flex;
-      flex-direction: column;
-    }
+    #s23 { max-width: 100%; width: calc(100% + 40px); margin-left: -20px; margin-right: -20px; padding: 0 !important; gap: 0 !important; align-items: stretch; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .logo { width: 300px; max-width: 82vw; height: auto; }
+    .aviso { font-size: 1.5rem; font-weight: 900; line-height: 1.35; color: #fff; }
+    .q-title { font-size: 1.45rem; font-weight: 900; color: #c0121e; line-height: 1.25; }
+    .q-sub { font-size: .9rem; font-weight: 700; font-style: italic; color: #fff; line-height: 1.4; }
+    .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+    .card { background: #b81020; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform .15s; display: flex; flex-direction: column; -webkit-tap-highlight-color: transparent; }
     .card:active { transform: scale(.96); }
-    .card:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.5); }
-    .card img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      object-position: top center;
-      display: block;
-    }
-    .card-label {
-      padding: 10px 10px 14px;
-      font-size: .88rem;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.3;
-      text-align: left;
-    }
-
-    /* BOTÃO GERAL */
-    .btn {
-      width: 100%;
-      padding: 20px;
-      background: #b81020;
-      color: #fff;
-      font-family: 'Montserrat', sans-serif;
-      font-size: .92rem;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 7px 0 #7a0a15, 0 10px 20px rgba(0,0,0,.5);
-      animation: pulsar 2.4s ease-in-out infinite;
-      transition: transform .1s, box-shadow .1s;
-    }
-    .btn:active {
-      transform: translateY(5px);
-      box-shadow: 0 2px 0 #7a0a15, 0 4px 8px rgba(0,0,0,.4);
-    }
-    @keyframes pulsar {
-      0%,100% { box-shadow: 0 7px 0 #7a0a15, 0 10px 22px rgba(180,10,25,.3); }
-      50%      { box-shadow: 0 7px 0 #7a0a15, 0 10px 30px rgba(180,10,25,.55); }
-    }
-
-    /* ── TELA 3 ── */
-    .q-title-white { font-size:1.55rem; font-weight:900; color:#fff; line-height:1.25; text-align:center; }
-    .q-title-white .red { color:#c0121e; display:block; margin-bottom:4px; }
-    .opt-list { display:flex; flex-direction:column; gap:14px; width:100%; }
-    .opt-btn {
-      width:100%; padding:20px 22px;
-      background:#b81020; color:#fff;
-      font-family:'Montserrat',sans-serif; font-size:1rem; font-weight:700;
-      text-align:left; border:none; border-radius:50px; cursor:pointer;
-      box-shadow:0 5px 0 #7a0a15, 0 8px 16px rgba(0,0,0,.4);
-      transition:transform .12s, box-shadow .12s;
-    }
-    .opt-btn:hover  { transform:translateY(-2px); }
-    .opt-btn:active { transform:translateY(4px); box-shadow:0 1px 0 #7a0a15; }
-    .bottom-img {
-      width:85%; max-width:320px; height:auto;
-      -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 50%, transparent 100%);
-      mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 50%, transparent 100%);
-    }
+    .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; object-position: top center; display: block; }
+    .card-label { padding: 8px 8px 12px; font-size: .82rem; font-weight: 800; color: #fff; line-height: 1.3; text-align: left; }
+    .btn { width: 100%; padding: 18px; background: #b81020; color: #fff; font-family: 'Montserrat', sans-serif; font-size: .9rem; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 7px 0 #7a0a15; animation: pulsar 2.4s ease-in-out infinite; transition: transform .1s, box-shadow .1s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    .btn:active { transform: translateY(5px); box-shadow: 0 2px 0 #7a0a15; }
+    @keyframes pulsar { 0%,100% { box-shadow: 0 7px 0 #7a0a15, 0 10px 22px rgba(180,10,25,.3); } 50% { box-shadow: 0 7px 0 #7a0a15, 0 10px 30px rgba(180,10,25,.55); } }
+    .q-title-white { font-size: 1.4rem; font-weight: 900; color: #fff; line-height: 1.3; text-align: center; }
+    .q-title-white .red { color: #c0121e; display: block; margin-bottom: 4px; }
+    .opt-list { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+    .opt-btn { width: 100%; padding: 18px 20px; background: #b81020; color: #fff; font-family: 'Montserrat', sans-serif; font-size: .95rem; font-weight: 700; text-align: left; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #7a0a15; transition: transform .12s, box-shadow .12s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    .opt-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #7a0a15; }
+    .bottom-img { width: 85%; max-width: 300px; height: auto; -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 50%, transparent 100%); mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 50%, transparent 100%); }
   </style>
 </head>
 <body>
-  <div class="progress-wrap">
-    <div class="progress-fill" id="progress" style="width:4%"></div>
-  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
 
-  <!-- ══ TELA 1 — IDADE ══ -->
   <div class="screen active" id="s1">
-    <img class="logo"
-      src="https://doram.shop/wp-content/uploads/2026/03/lg-QOQjf-gemini-generated-image-rnsg4trnsg4trnsg.webp"
-      alt="Logo"/>
-    <p class="aviso">
-      Você deve ter 18 anos ou<br>mais para continuar!
-    </p>
-    <button class="btn" onclick="goTo('s2', 14)">
-      TENHO 18 ANOS OU MAIS!
-    </button>
+    <img class="logo" src="https://doram.shop/wp-content/uploads/2026/03/lg-QOQjf-gemini-generated-image-rnsg4trnsg4trnsg.webp" alt="Logo"/>
+    <p class="aviso">Você deve ter 18 anos ou<br>mais para continuar!</p>
+    <button class="btn" onclick="goTo('s2',14)">TENHO 18 ANOS OU MAIS!</button>
   </div>
 
-  <!-- ══ TELA 2 — OBJETIVO ══ -->
   <div class="screen" id="s2">
-    <p class="q-title">Qual é o seu Principal<br>Objetivo aqui? 😈</p>
-    <p class="q-sub">Você vai aprender tudo na Prática com<br>vídeos Explícitos!</p>
-
+    <p class="q-title">Qual é o seu Principal<br>Objetivo aqui? 🔥</p>
+    <p class="q-sub">Você vai aprender tudo na Prática com vídeos Explícitos!</p>
     <div class="cards-grid">
-      <div class="card" onclick="goTo('s3', 28)">
-        <img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-01.png" alt="Técnicas Orgásmicas"/>
-        <div class="card-label">Aprender as 23 Técnicas Orgásmicas</div>
-      </div>
-      <div class="card" onclick="goTo('s3', 28)">
-        <img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-02.png" alt="Squirt"/>
-        <div class="card-label">Fazer qualquer Mulher ter um Squirt (Jorrar)</div>
-      </div>
-      <div class="card" onclick="goTo('s3', 28)">
-        <img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-03.png" alt="Bom de Cama"/>
-        <div class="card-label">Ser um Homem Bom de Cama 😌</div>
-      </div>
-      <div class="card" onclick="goTo('s3', 28)">
-        <img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-04.png" alt="Múltiplos Orgasmos"/>
-        <div class="card-label">Proporcionar Múltiplos Orgasmos 💦</div>
-      </div>
+      <div class="card" onclick="goTo('s3',28)"><img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-01.png" alt=""/><div class="card-label">Aprender as 23 Técnicas Orgásmicas</div></div>
+      <div class="card" onclick="goTo('s3',28)"><img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-02.png" alt=""/><div class="card-label">Fazer qualquer Mulher Jorrar (Squirt)</div></div>
+      <div class="card" onclick="goTo('s3',28)"><img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-03.png" alt=""/><div class="card-label">Dominar qualquer mulher na cama 💪</div></div>
+      <div class="card" onclick="goTo('s3',28)"><img src="https://doram.shop/wp-content/uploads/2026/03/pg-02-04.png" alt=""/><div class="card-label">Proporcionar Múltiplos Orgasmos 💦</div></div>
     </div>
   </div>
 
-  <!-- ══ TELA 3 — BOM DE CAMA? ══ -->
   <div class="screen" id="s3">
-    <div class="q-title-white">
-      <span class="red">Perfeito!</span>
-      Você se considera um<br>homem bom de cama?
-    </div>
-
+    <div class="q-title-white"><span class="red">Perfeito!</span>Você se considera um homem bom de cama?</div>
     <div class="opt-list">
-      <button class="opt-btn" onclick="goTo('s4', 42)">Sim, totalmente 😼</button>
-      <button class="opt-btn" onclick="goTo('s4', 42)">Mais ou menos 😰</button>
-      <button class="opt-btn" onclick="goTo('s4', 42)">Não tenho tanta certeza 🤦‍♂️</button>
+      <button class="opt-btn" onclick="goTo('s4',42)">Sim, domino na cama 💪</button>
+      <button class="opt-btn" onclick="goTo('s4',42)">Mais ou menos, posso melhorar 💯</button>
+      <button class="opt-btn" onclick="goTo('s4',42)">Não tenho tanta certeza 🎯</button>
     </div>
-
-    <img class="bottom-img"
-      src="https://doram.shop/wp-content/uploads/2026/03/pg-03-01.png"
-      alt=""/>
+    <img class="bottom-img" src="https://doram.shop/wp-content/uploads/2026/03/pg-03-01.png" alt=""/>
   </div>
 
-  <!-- ══ TELA 4 — O QUE FALTA? ══ -->
   <div class="screen" id="s4">
-    <img class="bottom-img" style="width:90%;max-width:340px;margin-bottom:-10px"
-      src="https://doram.shop/wp-content/uploads/2026/03/pg-04-01.png"
-      alt=""/>
-
-    <div class="q-title-white" style="font-size:1.5rem">
-      O que falta para você se<br>tornar esse homem?
-    </div>
-
+    <img class="bottom-img" style="width:90%;max-width:320px;margin-bottom:-8px" src="https://doram.shop/wp-content/uploads/2026/03/pg-04-01.png" alt=""/>
+    <div class="q-title-white">O que falta para você se tornar esse homem?</div>
     <div class="opt-list">
-      <button class="opt-btn" onclick="goTo('s5', 56)">Aprender novas Técnicas</button>
-      <button class="opt-btn" onclick="goTo('s5', 56)">Mais confiança na cama</button>
-      <button class="opt-btn" onclick="goTo('s5', 56)">Experiência Prática</button>
+      <button class="opt-btn" onclick="goTo('s5',56)">Aprender Técnicas que realmente funcionam 🔥</button>
+      <button class="opt-btn" onclick="goTo('s5',56)">Mais confiança e controle na cama 💪</button>
+      <button class="opt-btn" onclick="goTo('s5',56)">Prática com as técnicas certas 🎯</button>
     </div>
   </div>
 
-  <!-- ══ TELA 5 — DESEMPENHO SEXUAL ══ -->
   <div class="screen" id="s5">
-    <div class="q-title-white" style="font-size:1.45rem">
-      Como você classificaria o seu<br>Desempenho Sexual?
-    </div>
-
+    <div class="q-title-white">Como você classificaria o seu Desempenho Sexual?</div>
     <div class="opt-list">
-      <button class="opt-btn" onclick="goTo('s6', 70)" style="display:flex;align-items:center;gap:14px;font-size:1rem">
-        <span style="font-size:1.5rem">🤦‍♂️</span> Totalmente insatisfeito
-      </button>
-      <button class="opt-btn" onclick="goTo('s6', 70)" style="display:flex;align-items:center;gap:14px;font-size:1rem">
-        <span style="font-size:1.5rem">😰</span> Insatisfeito
-      </button>
-      <button class="opt-btn" onclick="goTo('s6', 70)" style="display:flex;align-items:center;gap:14px;font-size:1rem">
-        <span style="font-size:1.5rem">✅</span> Aceitável
-      </button>
-      <button class="opt-btn" onclick="goTo('s6', 70)" style="display:flex;align-items:center;gap:14px;font-size:1rem">
-        <span style="font-size:1.5rem">😌</span> Satisfeito
-      </button>
-      <button class="opt-btn" onclick="goTo('s6', 70)" style="display:flex;align-items:center;gap:14px;font-size:1rem">
-        <span style="font-size:1.5rem">😍</span> Muito Satisfeito
-      </button>
+      <button class="opt-btn" onclick="goTo('s6',70)" style="display:flex;align-items:center;gap:12px"><span style="font-size:1.4rem">💀</span>Totalmente insatisfeito</button>
+      <button class="opt-btn" onclick="goTo('s6',70)" style="display:flex;align-items:center;gap:12px"><span style="font-size:1.4rem">⚡</span>Insatisfeito, quero melhorar</button>
+      <button class="opt-btn" onclick="goTo('s6',70)" style="display:flex;align-items:center;gap:12px"><span style="font-size:1.4rem">✅</span>Aceitável, mas posso mais</button>
+      <button class="opt-btn" onclick="goTo('s6',70)" style="display:flex;align-items:center;gap:12px"><span style="font-size:1.4rem">💪</span>Satisfeito</button>
+      <button class="opt-btn" onclick="goTo('s6',70)" style="display:flex;align-items:center;gap:12px"><span style="font-size:1.4rem">🔥</span>Muito Satisfeito</button>
     </div>
   </div>
 
-  <!-- ══ TELA 6 — SQUIRT ══ -->
   <div class="screen" id="s6">
-    <div class="q-title-white" style="font-size:1.45rem">
-      Você já ouviu falar do Squirt<br>Feminino?
-    </div>
-
-    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-05-01.gif"
-      alt="Squirt"
-      style="width:100%;border-radius:12px;object-fit:cover;"
-      onerror="this.style.display='none'"/>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
-      <button class="opt-btn" onclick="goTo('s7', 84)" style="border-radius:12px;text-align:center;padding:18px 12px;font-size:.92rem">
-        Sim, conheço bem 😏
-      </button>
-      <button class="opt-btn" onclick="goTo('s7', 84)" style="border-radius:12px;text-align:center;padding:18px 12px;font-size:.92rem">
-        Não nunca ouvi falar 🤔
-      </button>
+    <div class="q-title-white">Você já ouviu falar do Squirt Feminino?</div>
+    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-05-01.gif" alt="" style="width:100%;border-radius:12px;display:block" onerror="this.style.display='none'"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
+      <button class="opt-btn" onclick="goTo('s7',84)" style="border-radius:12px;text-align:center;padding:16px 10px;font-size:.88rem">Sim, conheço 💪</button>
+      <button class="opt-btn" onclick="goTo('s7',84)" style="border-radius:12px;text-align:center;padding:16px 10px;font-size:.88rem">Nunca ouvi falar 🎯</button>
     </div>
   </div>
 
-  <!-- ══ TELA 7 — O QUE É O SQUIRT ══ -->
   <div class="screen" id="s7">
-    <div class="q-title-white" style="font-size:1.45rem">
-      O que é o Squirt?
+    <div class="q-title-white">O que é o Squirt?</div>
+    <div style="background:#f2e8e8;border-radius:12px;padding:16px;text-align:left;width:100%">
+      <p style="color:#1a1a1a;font-size:.88rem;font-weight:600;line-height:1.6"><strong style="color:#c0121e">O Squirt Feminino</strong> é uma resposta sexual intensa em que a mulher expulsa um líquido durante o orgasmo extremo.<br><br>Acontece quando estimulada corretamente no Ponto G. A maioria dos homens nunca aprendeu como provocar isso. Com as técnicas certas, <strong>qualquer mulher consegue</strong>.</p>
     </div>
-
-    <div style="background:#f2e8e8;border-radius:14px;padding:18px 16px;text-align:left;width:100%">
-      <p style="color:#1a1a1a;font-size:.9rem;font-weight:600;line-height:1.65">
-        <strong style="color:#c0121e">O Squirt Feminino</strong>, também conhecido como "ejaculação feminina", é uma resposta sexual intensa em que algumas mulheres expulsam um líquido claro através da uretra durante o orgasmo ou uma excitação muito forte.
-        <br><br>
-        Isso acontece quando a mulher é estimulada de maneira adequada, especialmente na região do Ponto G, levando ela a alcançar esse nível elevado de prazer. Nem todas as mulheres já experimentaram isso, e muitos homens não sabem como provocar isso, mas com as técnicas certas, qualquer mulher pode conseguir!
-      </p>
-    </div>
-
-    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-06-01.png"
-      alt="Squirt"
-      class="bottom-img"
-      style="width:90%;max-width:320px"/>
-
-    <button class="btn" onclick="goTo('s8', 90)">
-      ENTENDI
-    </button>
+    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-06-01.png" alt="" class="bottom-img" style="width:85%;max-width:300px"/>
+    <button class="btn" onclick="goTo('s8',90)">ENTENDI — QUERO APRENDER</button>
   </div>
 
-  <!-- ══ TELA 8 — NÍVEL DE PRAZER ══ -->
   <div class="screen" id="s8">
-    <img class="bottom-img" style="width:85%;max-width:300px"
-      src="https://doram.shop/wp-content/uploads/2026/03/pg-07-01.png" alt=""/>
-
-    <div class="q-title-white" style="font-size:1.4rem">
-      Você já se perguntou como fazer uma mulher alcançar esse nível de Prazer?
-    </div>
-
+    <img class="bottom-img" style="width:82%;max-width:290px" src="https://doram.shop/wp-content/uploads/2026/03/pg-07-01.png" alt=""/>
+    <div class="q-title-white">Você já se perguntou como fazer uma mulher alcançar esse nível de Prazer?</div>
     <div class="opt-list">
-      <button class="opt-btn" onclick="goTo('s9', 94)">Sim, e quero descobrir como fazer isso</button>
-      <button class="opt-btn" onclick="goTo('s9', 94)">Sim, mas não sei por onde começar</button>
-      <button class="opt-btn" onclick="goTo('s9', 94)">Não, mas agora me interessei muito</button>
+      <button class="opt-btn" onclick="goTo('s9',94)">Sim — quero dominar isso agora 🔥</button>
+      <button class="opt-btn" onclick="goTo('s9',94)">Sim — mas não sei por onde começar 💯</button>
+      <button class="opt-btn" onclick="goTo('s9',94)">Agora me interessei muito 🎯</button>
     </div>
   </div>
 
-  <!-- ══ TELA 9 — SQUIRT TÉCNICAS ══ -->
   <div class="screen" id="s9">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Você acredita que qualquer mulher pode ter um Squirt se o homem souber as Técnicas adequadas?
-    </div>
-
+    <div class="q-title-white">Você acredita que qualquer mulher pode ter um Squirt se o homem souber as Técnicas certas?</div>
     <div class="opt-list">
-      <button class="opt-btn" onclick="goTo('s10', 97)">Sim, acredito que sim ✅</button>
-      <button class="opt-btn" onclick="goTo('s10', 97)">Não, acho que é algo raro e difícil 🤔</button>
+      <button class="opt-btn" onclick="goTo('s10',97)">Sim — com as técnicas certas, qualquer uma ✅</button>
+      <button class="opt-btn" onclick="goTo('s10',97)">Acho difícil, mas quero descobrir 🎯</button>
     </div>
   </div>
 
-  <!-- ══ TELA 10 — ESTATÍSTICA ══ -->
   <div class="screen" id="s10">
-    <div class="q-title-white" style="font-size:1.35rem">
-      Os estudos afirmam que apenas 1 a cada 10 mulheres consegue alcançar esse tipo de prazer (Squirt).
-    </div>
-
-    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-08-01.webp"
-      alt="Estatística"
-      style="width:100%;border-radius:14px;object-fit:cover"/>
-
+    <div class="q-title-white">Os estudos afirmam que apenas <span style="color:#c0121e">1 a cada 10 mulheres</span> já experimentou um Squirt na vida.</div>
+    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-08-01.webp" alt="" style="width:100%;border-radius:12px;display:block"/>
     <div style="background:#1a1a1a;border-radius:12px;padding:16px;width:100%">
-      <p style="color:#fff;font-size:1rem;font-weight:800;line-height:1.5;text-align:center">
-        Mas calma! Existem Técnicas para isso<br>e poucos homens conhecem!
-      </p>
+      <p style="color:#fff;font-size:.95rem;font-weight:800;line-height:1.5;text-align:center">O motivo? O homem não sabe as Técnicas.<br><span style="color:#c0121e">Você está prestes a mudar isso.</span></p>
     </div>
-
-    <button class="btn" onclick="goTo('s11', 100)">CONTINUAR</button>
+    <button class="btn" onclick="goTo('s11',100)">QUERO SABER AS TÉCNICAS</button>
   </div>
 
-  <!-- ══ TELA 11 — MUDARIA SUA VIDA ══ -->
   <div class="screen" id="s11">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Se você tivesse o conhecimento e as Técnicas necessárias para fazer qualquer Mulher ter um Squirt, como mudaria a sua vida Sexual?
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
-      <button class="opt-btn" onclick="goTo('s12', 100)" style="border-radius:12px;text-align:center;padding:20px 12px;font-size:.95rem">
-        Seria incrível 😍
-      </button>
-      <button class="opt-btn" onclick="goTo('s12', 100)" style="border-radius:12px;text-align:center;padding:20px 12px;font-size:.95rem">
-        Seria muito interessante 😏
-      </button>
+    <div class="q-title-white">Se você dominasse as Técnicas para fazer qualquer mulher ter um Squirt — como isso mudaria sua vida sexual?</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
+      <button class="opt-btn" onclick="goTo('s12',100)" style="border-radius:12px;text-align:center;padding:18px 10px;font-size:.9rem">Seria incrível 🔥</button>
+      <button class="opt-btn" onclick="goTo('s12',100)" style="border-radius:12px;text-align:center;padding:18px 10px;font-size:.9rem">Mudaria tudo 💪</button>
     </div>
   </div>
 
-  <!-- ══ TELA 12 — DOMINAR TÉCNICAS ══ -->
   <div class="screen" id="s12">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Você acredita que dominar essas Técnicas é o que faltava para proporcionar esse tipo de Prazer?
-    </div>
-
+    <div class="q-title-white">Dominar essas Técnicas é o que falta para você se tornar o homem que <span style="color:#c0121e">toda mulher quer</span> na cama?</div>
     <div class="opt-list">
-      <button class="opt-btn" onclick="goTo('s13', 100)">Sim, com certeza ✅</button>
-      <button class="opt-btn" onclick="goTo('s13', 100)">Não tenho certeza, mas estou disposto a aprender 😌</button>
+      <button class="opt-btn" onclick="goTo('s13',100)">Sim — é exatamente o que preciso ✅</button>
+      <button class="opt-btn" onclick="goTo('s13',100)">Estou disposto a aprender agora 🔥</button>
     </div>
   </div>
 
-  <!-- ══ TELA 13 — DEPOIMENTOS ══ -->
   <div class="screen" id="s13">
-    <div class="q-title-white">
-      <span style="color:#c0121e;font-size:1.4rem;display:block;line-height:1.3">Veja o que outros homens dizem depois de aplicar essas técnicas secretas 👇</span>
-    </div>
-
-    <p style="color:#fff;font-size:.92rem;font-weight:700;font-style:italic;text-align:center;line-height:1.5">
-      Esses são apenas alguns dos milhares de homens que já aplicaram essas técnicas!
-    </p>
-
-    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-10-01.webp"
-      alt="Depoimento 1"
-      style="width:100%;border-radius:14px;object-fit:cover"/>
-
-    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-10-02.webp"
-      alt="Depoimento 2"
-      style="width:100%;border-radius:14px;object-fit:cover"/>
-
-    <button class="btn" onclick="goTo('s14', 100)">CONTINUAR</button>
+    <div class="q-title-white"><span style="color:#c0121e;font-size:1.3rem;display:block;line-height:1.3">Veja o que homens comuns alcançaram depois de aplicar essas técnicas 👇</span></div>
+    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-10-01.webp" alt="" style="width:100%;border-radius:12px;display:block"/>
+    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-10-02.webp" alt="" style="width:100%;border-radius:12px;display:block"/>
+    <button class="btn" onclick="goTo('s14',100)">CONTINUAR</button>
   </div>
 
-  <!-- ══ TELA 14 — QUER APRENDER? ══ -->
   <div class="screen" id="s14">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Você quer aprender na Prática como funcionam essas Técnicas e aplicar na sua mulher hoje mesmo?
+    <div class="q-title-white">Você quer aprender na Prática o passo a passo dessas Técnicas e aplicar ainda hoje?</div>
+    <p class="q-sub">Sem enrolação. Direto ao ponto.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
+      <button class="opt-btn" onclick="goTo('s15',100)" style="border-radius:12px;text-align:center;padding:18px 10px;font-size:1rem;font-weight:900">SIM 🔥</button>
+      <button class="opt-btn" onclick="goTo('s15',100)" style="border-radius:12px;text-align:center;padding:18px 10px;font-size:1rem;font-weight:900">NÃO</button>
     </div>
-
-    <p style="color:#fff;font-size:.92rem;font-weight:700;font-style:italic;text-align:center;line-height:1.5">
-      Vamos te ensinar todo o passo a passo dessas Técnicas Secretas
-    </p>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
-      <button class="opt-btn" onclick="goTo('s15', 100)" style="border-radius:12px;text-align:center;padding:20px 12px;font-size:1.1rem;font-weight:900;letter-spacing:2px">
-        SIM
-      </button>
-      <button class="opt-btn" onclick="goTo('s15', 100)" style="border-radius:12px;text-align:center;padding:20px 12px;font-size:1.1rem;font-weight:900;letter-spacing:2px">
-        NÃO
-      </button>
-    </div>
-
-    <img class="bottom-img" style="width:90%;max-width:320px"
-      src="https://doram.shop/wp-content/uploads/2026/03/pg-11-01.png" alt=""/>
+    <img class="bottom-img" style="width:88%;max-width:310px" src="https://doram.shop/wp-content/uploads/2026/03/pg-11-01.png" alt=""/>
   </div>
 
-  <!-- ══ TELA 15 — VÍDEO SQUIRT ══ -->
   <div class="screen" id="s15">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Veja o passo a passo de como fazer ela ter um Squirt
+    <div class="q-title-white">Veja o passo a passo de como fazer ela ter um Squirt</div>
+    <p class="q-sub">Isso é só 1 das 23 Técnicas que vamos te ensinar...</p>
+    <div style="width:100%;border-radius:10px;overflow:hidden">
+      <iframe src="https://app.litevideo.net/embed/52675b1b-1175-4af6-8240-cbff6820271f?cs=s&ps=l&io=40&pc=f00000" style="width:100%;aspect-ratio:16/9;border:0;display:block" allowfullscreen loading="lazy"></iframe>
     </div>
-
-    <p style="color:#fff;font-size:.92rem;font-weight:700;font-style:italic;text-align:center;line-height:1.5">
-      E isso é só 1 das 23 Técnicas que vamos te ensinar... 😏
-    </p>
-
-    <div style="width:100%;border-radius:12px;overflow:hidden">
-      <iframe src="https://app.litevideo.net/embed/52675b1b-1175-4af6-8240-cbff6820271f?cs=s&ps=l&io=40&pc=f00000"
-        style="width:100%;aspect-ratio:16/9;border:0;display:block"
-        allowfullscreen loading="lazy"></iframe>
-    </div>
-
-    <div class="q-title-white" style="color:#c0121e;font-size:1.3rem">
-      O que você achou?
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
-      <button class="opt-btn" onclick="goTo('s16', 100)" style="border-radius:12px;text-align:center;padding:18px 12px;font-size:.95rem">
-        Muito bom 🤤
-      </button>
-      <button class="opt-btn" onclick="goTo('s16', 100)" style="border-radius:12px;text-align:center;padding:18px 12px;font-size:.95rem">
-        Vou aplicar hoje mesmo 😈
-      </button>
+    <div class="q-title-white" style="color:#c0121e;font-size:1.2rem">O que você achou?</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
+      <button class="opt-btn" onclick="goTo('s16',100)" style="border-radius:12px;text-align:center;padding:16px 10px;font-size:.9rem">Absurdo 🔥</button>
+      <button class="opt-btn" onclick="goTo('s16',100)" style="border-radius:12px;text-align:center;padding:16px 10px;font-size:.9rem">Vou aplicar hoje 💪</button>
     </div>
   </div>
 
-  <!-- ══ TELA 16 — 87% ══ -->
   <div class="screen" id="s16">
-    <div class="q-title-white" style="font-size:1.4rem">
-      87% dos homens que dominam e aplicam essas Técnicas fazem a sua Mulher ter um Squirt nos Primeiros minutos... 😈
-    </div>
-
-    <img class="bottom-img" style="width:90%;max-width:340px"
-      src="https://doram.shop/wp-content/uploads/2026/03/pg-12-01.png" alt=""/>
-
-    <button class="btn" onclick="goTo('s17', 100)">CONTINUAR</button>
+    <div class="q-title-white"><span style="color:#c0121e">87% dos homens</span> que aplicam essas Técnicas fazem a mulher ter um Squirt nos primeiros minutos.</div>
+    <img class="bottom-img" style="width:88%;max-width:320px" src="https://doram.shop/wp-content/uploads/2026/03/pg-12-01.png" alt=""/>
+    <button class="btn" onclick="goTo('s17',100)">QUERO FAZER PARTE DESSES 87%</button>
   </div>
 
-  <!-- ══ TELA 17 — DISPOSTO A APRENDER ══ -->
   <div class="screen" id="s17">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Você está Disposto a Aprender e Aplicar todo o Passo a Passo dessas Técnicas Secretas?
-    </div>
-
-    <p style="color:#c0121e;font-size:.92rem;font-weight:700;font-style:italic;text-align:center;line-height:1.5">
-      Não basta só olhar... você tem que aprender e colocar em prática!
-    </p>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
-      <button class="opt-btn" onclick="goTo('s18', 100)" style="border-radius:12px;text-align:center;padding:20px 12px;font-size:1.1rem;font-weight:900">Sim</button>
-      <button class="opt-btn" onclick="goTo('s18', 100)" style="border-radius:12px;text-align:center;padding:20px 12px;font-size:1.1rem;font-weight:900">Não</button>
+    <div class="q-title-white">Você está disposto a aprender e aplicar o passo a passo dessas Técnicas Secretas?</div>
+    <p style="color:#c0121e;font-size:.88rem;font-weight:700;font-style:italic;text-align:center;line-height:1.5">Quem aplica, transforma. Quem só assiste, continua igual.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
+      <button class="opt-btn" onclick="goTo('s18',100)" style="border-radius:12px;text-align:center;padding:18px 10px;font-size:1rem;font-weight:900">SIM 🔥</button>
+      <button class="opt-btn" onclick="goTo('s18',100)" style="border-radius:12px;text-align:center;padding:18px 10px;font-size:1rem;font-weight:900">NÃO</button>
     </div>
   </div>
 
-  <!-- ══ TELA 18 — IMAGINA ══ -->
   <div class="screen" id="s18">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Agora imagina a sua Mulher tendo um Squirt e alcançando esse nível de Prazer... 😏
-    </div>
-
-    <img class="bottom-img" style="width:90%;max-width:340px"
-      src="https://doram.shop/wp-content/uploads/2026/03/pg-13-01.png" alt=""/>
-
-    <div class="q-title-white" style="font-size:1.3rem">
-      Como isso mudaria a sua relação?
-    </div>
-
+    <div class="q-title-white">Imagina sua mulher tremendo, gritando, completamente fora de controle por causa de você...</div>
+    <img class="bottom-img" style="width:88%;max-width:320px" src="https://doram.shop/wp-content/uploads/2026/03/pg-13-01.png" alt=""/>
+    <div class="q-title-white" style="font-size:1.2rem">Como isso mudaria a sua relação?</div>
     <div class="opt-list">
-      <button class="opt-btn" onclick="goTo('s19', 100)">Seria Perfeito 😍</button>
-      <button class="opt-btn" onclick="goTo('s19', 100)">Levaria o sexo a outro nível 😈</button>
+      <button class="opt-btn" onclick="goTo('s19',100)">Ela ficaria viciada em mim 🔥</button>
+      <button class="opt-btn" onclick="goTo('s19',100)">Levaria o sexo a outro nível 💪</button>
     </div>
   </div>
 
-  <!-- ══ TELA 19 — MULHER SE SENTIRIA ══ -->
   <div class="screen" id="s19">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Como você acha que a sua mulher se sentiria ao saber que você é capaz de proporcionar esse nível de Prazer?
-    </div>
-
+    <div class="q-title-white">Como sua mulher reagiria ao descobrir que você é capaz de proporcionar esse nível de prazer?</div>
     <div class="opt-list">
-      <button class="opt-btn" onclick="goTo('s20', 100)" style="display:flex;align-items:center;gap:14px">
-        <span style="font-size:1.5rem">😏</span> Ficaria mais louca por mim na cama
-      </button>
-      <button class="opt-btn" onclick="goTo('s20', 100)" style="display:flex;align-items:center;gap:14px">
-        <span style="font-size:1.5rem">🤤</span> Enlouqueceria de desejo
-      </button>
+      <button class="opt-btn" onclick="goTo('s20',100)" style="display:flex;align-items:center;gap:12px"><span style="font-size:1.3rem">🔥</span>Ficaria obcecada por mim</button>
+      <button class="opt-btn" onclick="goTo('s20',100)" style="display:flex;align-items:center;gap:12px"><span style="font-size:1.3rem">💪</span>Me veria com outros olhos</button>
     </div>
   </div>
 
-  <!-- ══ TELA 20 — 23 TÉCNICAS ══ -->
   <div class="screen" id="s20">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Você quer ter acesso a todas as 23 Técnicas e ser o homem que todas desejam na cama?
-    </div>
-
-    <p style="color:#c0121e;font-size:.92rem;font-weight:700;font-style:italic;text-align:center;line-height:1.5">
-      Domine essas técnicas e tenha qualquer mulher na palma da sua mão!
-    </p>
-
-    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-14-01.png"
-      alt="23 Técnicas"
-      style="width:100%;border-radius:12px;object-fit:cover"/>
-
-    <div class="q-title-white" style="font-size:1.3rem">
-      Como isso mudaria a sua relação?
-    </div>
-
+    <div class="q-title-white">Você quer acesso às <span style="color:#c0121e">23 Técnicas</span> e se tornar o homem que nenhuma mulher consegue esquecer?</div>
+    <img src="https://doram.shop/wp-content/uploads/2026/03/pg-14-01.png" alt="" style="width:100%;border-radius:10px;display:block"/>
     <div class="opt-list">
-      <button class="opt-btn" onclick="goTo('s21', 100)">Sim, com certeza 😌</button>
-      <button class="opt-btn" onclick="goTo('s21', 100)">Acessar agora 🔥</button>
+      <button class="opt-btn" onclick="goTo('s21',100)">Sim — quero dominar agora ✅</button>
+      <button class="opt-btn" onclick="goTo('s21',100)">Quero acessar agora 🔥</button>
     </div>
   </div>
 
-  <!-- ══ TELA 21 — DEPOIMENTOS VÍDEO ══ -->
   <div class="screen" id="s21">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Veja os depoimentos de homens comuns que usaram as técnicas...
+    <div class="q-title-white" style="font-size:1.3rem">Homens comuns. Resultados reais.</div>
+    <div style="width:100%;border-radius:10px;overflow:hidden">
+      <iframe src="https://app.litevideo.net/embed/827c97f9-10eb-4c04-886b-58711419dbb4?ar=9%3A16&ph=3&sv=0&st=0&sc=0&lp=0&pc=b80000" style="width:100%;aspect-ratio:9/16;border:0;display:block" allowfullscreen loading="lazy"></iframe>
     </div>
-
-    <div style="width:100%;border-radius:12px;overflow:hidden">
-      <iframe src="https://app.litevideo.net/embed/827c97f9-10eb-4c04-886b-58711419dbb4?ar=9%3A16&ph=3&sv=0&st=0&sc=0&lp=0&pc=b80000"
-        style="width:100%;aspect-ratio:9/16;border:0;display:block"
-        allowfullscreen loading="lazy"></iframe>
+    <div style="width:100%;border-radius:10px;overflow:hidden">
+      <iframe src="https://app.litevideo.net/embed/cb12af9f-781c-4cc4-b001-b270960684ff?ar=9%3A16&ph=3&cs=b&st=0&sc=0&lp=0&pc=b80000" style="width:100%;aspect-ratio:9/16;border:0;display:block" allowfullscreen loading="lazy"></iframe>
     </div>
-
-    <div style="width:100%;border-radius:12px;overflow:hidden">
-      <iframe src="https://app.litevideo.net/embed/cb12af9f-781c-4cc4-b001-b270960684ff?ar=9%3A16&ph=3&cs=b&st=0&sc=0&lp=0&pc=b80000"
-        style="width:100%;aspect-ratio:9/16;border:0;display:block"
-        allowfullscreen loading="lazy"></iframe>
-    </div>
-
-    <button class="btn" onclick="goTo('s22', 100)">CONTINUAR</button>
+    <button class="btn" onclick="goTo('s22',100)">CONTINUAR</button>
   </div>
 
-  <!-- ══ TELA 22 — UM PASSO ══ -->
   <div class="screen" id="s22">
-    <div class="q-title-white" style="font-size:1.4rem">
-      Você está a um passo de se destacar da maioria dos homens e ser o único capaz de proporcionar Múltiplos Orgasmos 💦
-    </div>
-
-    <p style="color:#c0121e;font-size:1rem;font-weight:800;font-style:italic;text-align:center">
-      Você está pronto para isso?
-    </p>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
-      <button class="opt-btn" onclick="goTo('s23', 100)" style="border-radius:12px;text-align:center;padding:20px 12px;font-size:1.1rem;font-weight:900;letter-spacing:2px">SIM</button>
-      <button class="opt-btn" onclick="goTo('s23', 100)" style="border-radius:12px;text-align:center;padding:20px 12px;font-size:1.1rem;font-weight:900;letter-spacing:2px">NÃO</button>
+    <div class="q-title-white">Você está a <span style="color:#c0121e">um passo</span> de se tornar o homem que toda mulher deseja e nunca esquece.</div>
+    <p style="color:#c0121e;font-size:.95rem;font-weight:800;font-style:italic;text-align:center">Você está pronto?</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
+      <button class="opt-btn" onclick="goTo('s23',100)" style="border-radius:12px;text-align:center;padding:18px 10px;font-size:1rem;font-weight:900">SIM 🔥</button>
+      <button class="opt-btn" onclick="goTo('s23',100)" style="border-radius:12px;text-align:center;padding:18px 10px;font-size:1rem;font-weight:900">NÃO</button>
     </div>
   </div>
 
-  <!-- ══ TELA 23 — PÁGINA DE VENDAS ══ -->
+  <!-- TELA 23 -->
   <div class="screen" id="s23">
-
-    <!-- HERO -->
-    <div style="background:#000;width:100%;padding:24px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
+    <div style="background:#000;width:100%;padding:22px 18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
       <h1 style="font-size:1.05rem;font-weight:900;line-height:1.5;text-align:center;margin:0">
         <span style="color:#fff">Descubra as </span><span style="color:#f5c518">23 Técnicas Secretas</span><br>
         <span style="color:#fff">para fazer qualquer mulher ter um</span><br>
@@ -612,272 +252,217 @@
       </h1>
       <p style="color:#f5c518;font-size:.78rem;font-weight:700;font-style:italic;margin:0">Assista abaixo a prévia de uma das aulas ⬇️</p>
       <div style="width:100%;border-radius:8px;overflow:hidden;position:relative">
-        <video src="https://doram.shop/wp-content/uploads/2026/03/23-Tecnicas-3.mp4" controls playsinline style="width:100%;display:block;background:#111"></video>
+        <video src="https://doram.shop/wp-content/uploads/2026/03/23-Tecnicas-3.mp4" controls playsinline preload="none" style="width:100%;display:block;background:#111"></video>
         <div style="position:absolute;top:6px;left:6px;background:#c0121e;color:#fff;font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:4px">● 173 assistindo</div>
       </div>
-      <p style="color:#fff;font-size:.88rem;font-weight:800;line-height:1.55;text-align:center;margin:0">Chega de sexo medíocre! Aprenda de verdade<br>como proporcionar orgasmos intensos e<br>prazerosos para a sua mulher.</p>
+      <p style="color:#fff;font-size:.88rem;font-weight:800;line-height:1.55;text-align:center;margin:0">Chega de sexo medíocre! Aprenda de verdade como proporcionar orgasmos intensos e prazerosos para a sua mulher.</p>
     </div>
 
-    <!-- DEPOIMENTOS IMAGENS -->
-    <div style="background:#0d0d0d;width:100%;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:14px">
-      <h2 style="color:#fff;font-size:1.1rem;font-weight:900;text-align:center">Veja o que nossos alunos dizem 👇</h2>
-      <img src="https://doram.shop/wp-content/uploads/2026/03/md-LDeKS-gemini-generated-image-51tfr051tfr051tf.webp" style="width:100%;border-radius:12px"/>
-      <img src="https://doram.shop/wp-content/uploads/2026/03/md-05hVq-gemini-generated-image-cme9rgcme9rgcme9.webp" style="width:100%;border-radius:12px"/>
-      <img src="https://doram.shop/wp-content/uploads/2026/03/md-3aNfy-gemini-generated-image-1ddgtb1ddgtb1ddg.webp" style="width:100%;border-radius:12px"/>
-      <img src="https://doram.shop/wp-content/uploads/2026/03/md-nOApU-gemini-generated-image-wt8lowt8lowt8low.webp" style="width:100%;border-radius:12px"/>
-      <img src="https://doram.shop/wp-content/uploads/2026/03/md-m1sLs-gemini-generated-image-jodkfvjodkfvjodk.webp" style="width:100%;border-radius:12px"/>
+    <div style="background:#0d0d0d;width:100%;padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:12px">
+      <h2 style="color:#fff;font-size:1rem;font-weight:900;text-align:center">Veja o que nossos alunos dizem 👇</h2>
+      <img src="https://doram.shop/wp-content/uploads/2026/03/md-LDeKS-gemini-generated-image-51tfr051tfr051tf.webp" style="width:100%;border-radius:10px;display:block"/>
+      <img src="https://doram.shop/wp-content/uploads/2026/03/md-05hVq-gemini-generated-image-cme9rgcme9rgcme9.webp" style="width:100%;border-radius:10px;display:block"/>
+      <img src="https://doram.shop/wp-content/uploads/2026/03/md-3aNfy-gemini-generated-image-1ddgtb1ddgtb1ddg.webp" style="width:100%;border-radius:10px;display:block"/>
+      <img src="https://doram.shop/wp-content/uploads/2026/03/md-nOApU-gemini-generated-image-wt8lowt8lowt8low.webp" style="width:100%;border-radius:10px;display:block"/>
+      <img src="https://doram.shop/wp-content/uploads/2026/03/md-m1sLs-gemini-generated-image-jodkfvjodkfvjodk.webp" style="width:100%;border-radius:10px;display:block"/>
     </div>
 
-    <!-- O QUE VOCÊ VAI RECEBER -->
-    <div style="background:#0a0a0a;width:100%;padding:24px 16px;display:flex;flex-direction:column;gap:10px">
+    <div style="background:#0a0a0a;width:100%;padding:22px 16px;display:flex;flex-direction:column;gap:10px">
       <h2 style="color:#c0121e;font-size:.85rem;font-weight:900;text-align:center;font-style:italic;text-decoration:underline;text-underline-offset:3px;margin-bottom:4px">O QUE VOCÊ VAI RECEBER?</h2>
-
-      <div style="background:#b81020;border-radius:12px;overflow:hidden;display:flex;align-items:stretch;min-height:80px">
-        <div style="flex:1;padding:12px 8px 12px 14px;display:flex;align-items:center">
-          <p style="color:#fff;font-size:.78rem;font-weight:600;line-height:1.45">23 vídeos detalhados, que ensinam técnicas secretas para fazer qualquer mulher ter um Squirt 💦</p>
-        </div>
-        <div style="display:flex;align-items:center;padding:0 6px;color:#fff;font-size:1rem;opacity:.8">›</div>
-        <div style="position:relative;width:90px;flex-shrink:0">
+      <div style="background:#b81020;border-radius:10px;overflow:hidden;display:flex;align-items:stretch;min-height:78px">
+        <div style="flex:1;padding:12px 8px 12px 12px;display:flex;align-items:center"><p style="color:#fff;font-size:.76rem;font-weight:600;line-height:1.45">23 vídeos com técnicas secretas para fazer qualquer mulher ter um Squirt 💦</p></div>
+        <div style="display:flex;align-items:center;padding:0 5px;color:#fff;font-size:1rem;opacity:.8">›</div>
+        <div style="position:relative;width:85px;flex-shrink:0">
           <img src="https://doram.shop/wp-content/uploads/2026/03/xs-LDDzK-design-sem-nome-67.png" style="width:100%;height:100%;object-fit:cover;display:block"/>
-          <span style="position:absolute;top:4px;right:4px;background:#111;color:#fff;font-size:.55rem;font-weight:900;padding:2px 4px;border-radius:3px">18</span>
-          <div style="position:absolute;bottom:6px;right:6px;width:20px;height:20px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.5rem;margin-left:1px">▶</span></div>
+          <span style="position:absolute;top:3px;right:3px;background:#111;color:#fff;font-size:.52rem;font-weight:900;padding:2px 4px;border-radius:3px">18</span>
+          <div style="position:absolute;bottom:5px;right:5px;width:18px;height:18px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.45rem;margin-left:1px">▶</span></div>
         </div>
       </div>
-
-      <div style="background:#b81020;border-radius:12px;overflow:hidden;display:flex;align-items:stretch;min-height:80px">
-        <div style="flex:1;padding:12px 8px 12px 14px;display:flex;align-items:center">
-          <p style="color:#fff;font-size:.78rem;font-weight:600;line-height:1.45">Os <strong>movimentos proibidos</strong> que as lésbicas usam para provocar <strong>orgasmos intensos</strong> e duradouros</p>
-        </div>
-        <div style="display:flex;align-items:center;padding:0 6px;color:#fff;font-size:1rem;opacity:.8">›</div>
-        <div style="position:relative;width:90px;flex-shrink:0">
+      <div style="background:#b81020;border-radius:10px;overflow:hidden;display:flex;align-items:stretch;min-height:78px">
+        <div style="flex:1;padding:12px 8px 12px 12px;display:flex;align-items:center"><p style="color:#fff;font-size:.76rem;font-weight:600;line-height:1.45">Os <strong>movimentos proibidos</strong> que as lésbicas usam para provocar <strong>orgasmos intensos</strong> e duradouros</p></div>
+        <div style="display:flex;align-items:center;padding:0 5px;color:#fff;font-size:1rem;opacity:.8">›</div>
+        <div style="position:relative;width:85px;flex-shrink:0">
           <img src="https://doram.shop/wp-content/uploads/2026/03/xs-d59S2-novo.png" style="width:100%;height:100%;object-fit:cover;display:block"/>
-          <span style="position:absolute;top:4px;right:4px;background:#111;color:#fff;font-size:.55rem;font-weight:900;padding:2px 4px;border-radius:3px">18</span>
-          <div style="position:absolute;bottom:6px;right:6px;width:20px;height:20px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.5rem;margin-left:1px">▶</span></div>
+          <span style="position:absolute;top:3px;right:3px;background:#111;color:#fff;font-size:.52rem;font-weight:900;padding:2px 4px;border-radius:3px">18</span>
+          <div style="position:absolute;bottom:5px;right:5px;width:18px;height:18px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.45rem;margin-left:1px">▶</span></div>
         </div>
       </div>
-
-      <div style="background:#b81020;border-radius:12px;overflow:hidden;display:flex;align-items:stretch;min-height:80px">
-        <div style="flex:1;padding:12px 8px 12px 14px;display:flex;align-items:center">
-          <p style="color:#fff;font-size:.78rem;font-weight:600;line-height:1.45">O segredo do <strong>Ponto G</strong> e como estimular com os seus dedos até <strong>ela implorar por mais</strong> 😈</p>
-        </div>
-        <div style="display:flex;align-items:center;padding:0 6px;color:#fff;font-size:1rem;opacity:.8">›</div>
-        <div style="position:relative;width:90px;flex-shrink:0">
+      <div style="background:#b81020;border-radius:10px;overflow:hidden;display:flex;align-items:stretch;min-height:78px">
+        <div style="flex:1;padding:12px 8px 12px 12px;display:flex;align-items:center"><p style="color:#fff;font-size:.76rem;font-weight:600;line-height:1.45">O segredo do <strong>Ponto G</strong> — como estimular com os dedos até <strong>ela implorar por mais</strong> 🔥</p></div>
+        <div style="display:flex;align-items:center;padding:0 5px;color:#fff;font-size:1rem;opacity:.8">›</div>
+        <div style="position:relative;width:85px;flex-shrink:0">
           <img src="https://doram.shop/wp-content/uploads/2026/03/xs-aO53L-design-sem-nome-65.png" style="width:100%;height:100%;object-fit:cover;display:block"/>
-          <span style="position:absolute;top:4px;right:4px;background:#111;color:#fff;font-size:.55rem;font-weight:900;padding:2px 4px;border-radius:3px">18</span>
-          <div style="position:absolute;bottom:6px;right:6px;width:20px;height:20px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.5rem;margin-left:1px">▶</span></div>
+          <span style="position:absolute;top:3px;right:3px;background:#111;color:#fff;font-size:.52rem;font-weight:900;padding:2px 4px;border-radius:3px">18</span>
+          <div style="position:absolute;bottom:5px;right:5px;width:18px;height:18px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.45rem;margin-left:1px">▶</span></div>
         </div>
       </div>
-
-      <div style="background:#b81020;border-radius:12px;overflow:hidden;display:flex;align-items:stretch;min-height:80px">
-        <div style="flex:1;padding:12px 8px 12px 14px;display:flex;align-items:center">
-          <p style="color:#fff;font-size:.78rem;font-weight:600;line-height:1.45">Conteúdo atualizado constantemente, garantindo que você tenha sempre acesso às melhores Técnicas 🔥</p>
-        </div>
-        <div style="display:flex;align-items:center;padding:0 6px;color:#fff;font-size:1rem;opacity:.8">›</div>
-        <div style="position:relative;width:90px;flex-shrink:0">
+      <div style="background:#b81020;border-radius:10px;overflow:hidden;display:flex;align-items:stretch;min-height:78px">
+        <div style="flex:1;padding:12px 8px 12px 12px;display:flex;align-items:center"><p style="color:#fff;font-size:.76rem;font-weight:600;line-height:1.45">Conteúdo atualizado constantemente — sempre as técnicas mais eficazes 💪</p></div>
+        <div style="display:flex;align-items:center;padding:0 5px;color:#fff;font-size:1rem;opacity:.8">›</div>
+        <div style="position:relative;width:85px;flex-shrink:0">
           <img src="https://doram.shop/wp-content/uploads/2026/03/xs-aBqX8-design-sem-nome-66.png" style="width:100%;height:100%;object-fit:cover;display:block"/>
-          <div style="position:absolute;bottom:6px;right:6px;width:20px;height:20px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.5rem;margin-left:1px">▶</span></div>
+          <div style="position:absolute;bottom:5px;right:5px;width:18px;height:18px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.45rem;margin-left:1px">▶</span></div>
         </div>
       </div>
-
-      <!-- BANNER BÔNUS -->
     </div>
 
-    <!-- BÔNUS -->
-    <div style="background:#0d0d0d;width:100%;padding:20px 16px;display:flex;flex-direction:column;gap:12px">
-      <h2 style="color:#fff;font-size:.95rem;font-weight:900;text-align:center">Inscreva-se hoje e ganhe<br><span style="color:#c0121e">+ 4 Presentes</span></h2>
-      <p style="color:#aaa;font-size:.75rem;text-align:center;margin-top:-4px">Ao completar sua inscrição hoje, você recebe acesso imediato e todos esses Bônus 👇</p>
-
+    <div style="background:#0d0d0d;width:100%;padding:20px 16px;display:flex;flex-direction:column;gap:10px">
+      <h2 style="color:#fff;font-size:.9rem;font-weight:900;text-align:center">Inscreva-se hoje e ganhe<br><span style="color:#c0121e">+ 4 Bônus Exclusivos</span></h2>
+      <p style="color:#aaa;font-size:.72rem;text-align:center;margin-top:-4px">Acesso imediato a todos os bônus ao completar sua inscrição 👇</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
-
         <div style="background:#1a1a1a;border-radius:10px;overflow:hidden;display:flex;flex-direction:column">
-          <img src="https://doram.shop/wp-content/uploads/2026/03/md-ZFMu2-gemini-generated-image-pvgvvppvgvvppvgv.webp" style="width:100%;width:100%;height:auto;display:block"/>
+          <img src="https://doram.shop/wp-content/uploads/2026/03/md-ZFMu2-gemini-generated-image-pvgvvppvgvvppvgv.webp" style="width:100%;height:auto;display:block"/>
           <div style="padding:8px 10px;flex:1;display:flex;flex-direction:column;justify-content:space-between">
-            <p style="color:#ddd;font-size:.7rem;line-height:1.4;margin-bottom:6px">Descubra as melhores posições que facilitam o orgasmo e aumentam o prazer e a conexão com a sua mulher.</p>
-            <div><p style="color:#888;font-size:.65rem;text-decoration:line-through">De R$ 69</p><p style="color:#4caf50;font-size:.72rem;font-weight:900">por R$ 0</p></div>
+            <p style="color:#ddd;font-size:.68rem;line-height:1.4;margin-bottom:6px">As melhores posições para potencializar o orgasmo.</p>
+            <div><p style="color:#888;font-size:.62rem;text-decoration:line-through">De R$ 69</p><p style="color:#4caf50;font-size:.7rem;font-weight:900">por R$ 0</p></div>
           </div>
         </div>
-
         <div style="background:#1a1a1a;border-radius:10px;overflow:hidden;display:flex;flex-direction:column">
-          <img src="https://doram.shop/wp-content/uploads/2026/03/md-Ytz5I-gemini-generated-image-oqo53voqo53voqo5.webp" style="width:100%;width:100%;height:auto;display:block"/>
+          <img src="https://doram.shop/wp-content/uploads/2026/03/md-Ytz5I-gemini-generated-image-oqo53voqo53voqo5.webp" style="width:100%;height:auto;display:block"/>
           <div style="padding:8px 10px;flex:1;display:flex;flex-direction:column;justify-content:space-between">
-            <p style="color:#ddd;font-size:.7rem;line-height:1.4;margin-bottom:6px">Eleve o seu nível com o poder da Sedução. Atraia e conquiste qualquer mulher com essa Fórmula Secreta!</p>
-            <div><p style="color:#888;font-size:.65rem;text-decoration:line-through">De R$ 59</p><p style="color:#4caf50;font-size:.72rem;font-weight:900">por R$ 0</p></div>
+            <p style="color:#ddd;font-size:.68rem;line-height:1.4;margin-bottom:6px">A Fórmula Secreta da Sedução para conquistar qualquer mulher.</p>
+            <div><p style="color:#888;font-size:.62rem;text-decoration:line-through">De R$ 59</p><p style="color:#4caf50;font-size:.7rem;font-weight:900">por R$ 0</p></div>
           </div>
         </div>
-
         <div style="background:#1a1a1a;border-radius:10px;overflow:hidden;display:flex;flex-direction:column">
-          <img src="https://doram.shop/wp-content/uploads/2026/03/md-xx8fm-pransformar-cualquier-timida-en-un-obsesionado-por-sexo.png" style="width:100%;width:100%;height:auto;display:block"/>
+          <img src="https://doram.shop/wp-content/uploads/2026/03/md-xx8fm-pransformar-cualquier-timida-en-un-obsesionado-por-sexo.png" style="width:100%;height:auto;display:block"/>
           <div style="padding:8px 10px;flex:1;display:flex;flex-direction:column;justify-content:space-between">
-            <p style="color:#ddd;font-size:.7rem;line-height:1.4;margin-bottom:6px">Descubra como despertar o lado mais selvagem de qualquer mulher tímida com técnicas infalíveis.</p>
-            <div><p style="color:#888;font-size:.65rem;text-decoration:line-through">De R$ 69</p><p style="color:#4caf50;font-size:.72rem;font-weight:900">por R$ 0</p></div>
+            <p style="color:#ddd;font-size:.68rem;line-height:1.4;margin-bottom:6px">Como despertar o lado selvagem de qualquer mulher tímida.</p>
+            <div><p style="color:#888;font-size:.62rem;text-decoration:line-through">De R$ 69</p><p style="color:#4caf50;font-size:.7rem;font-weight:900">por R$ 0</p></div>
           </div>
         </div>
-
         <div style="background:#1a1a1a;border-radius:10px;overflow:hidden;display:flex;flex-direction:column">
-          <img src="https://doram.shop/wp-content/uploads/2026/03/md-o2eUI-gemini-generated-image-kapzv9kapzv9kapz.webp" style="width:100%;width:100%;height:auto;display:block"/>
+          <img src="https://doram.shop/wp-content/uploads/2026/03/md-o2eUI-gemini-generated-image-kapzv9kapzv9kapz.webp" style="width:100%;height:auto;display:block"/>
           <div style="padding:8px 10px;flex:1;display:flex;flex-direction:column;justify-content:space-between">
-            <p style="color:#ddd;font-size:.7rem;line-height:1.4;margin-bottom:6px">Entenda como funciona a mente feminina e use esse conhecimento para conquistar qualquer mulher.</p>
-            <div><p style="color:#888;font-size:.65rem;text-decoration:line-through">De R$ 49</p><p style="color:#4caf50;font-size:.72rem;font-weight:900">por R$ 0</p></div>
+            <p style="color:#ddd;font-size:.68rem;line-height:1.4;margin-bottom:6px">A mente feminina revelada — domine qualquer situação.</p>
+            <div><p style="color:#888;font-size:.62rem;text-decoration:line-through">De R$ 49</p><p style="color:#4caf50;font-size:.7rem;font-weight:900">por R$ 0</p></div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- OFERTA + TIMER -->
-    <div style="background:#c0121e;width:100%;padding:18px 20px;text-align:center">
-      <p style="color:#fff;font-size:.88rem;font-weight:900;line-height:1.5">🚨 ATENÇÃO: Essa oferta só estará disponível durante os próximos minutos... Acesse agora e garanta 70% de desconto!</p>
-      <p style="color:#fff;font-size:1rem;font-weight:900;margin-top:8px">TEMPO RESTANTE: <span id="timer" style="font-size:1.3rem;font-weight:900">10:00</span> ⏳</p>
+    <div style="background:#c0121e;width:100%;padding:16px 18px;text-align:center">
+      <p style="color:#fff;font-size:.85rem;font-weight:900;line-height:1.5">🚨 ATENÇÃO: Essa oferta expira em breve. Garanta agora com 70% de desconto!</p>
+      <p style="color:#fff;font-size:.95rem;font-weight:900;margin-top:8px">TEMPO RESTANTE: <span id="timer" style="font-size:1.25rem;font-weight:900">10:00</span> ⏳</p>
     </div>
 
-    <!-- CTA PRINCIPAL -->
-    <div style="background:#0a0a0a;width:100%;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:16px">
-      <p style="color:#fff;font-size:.9rem;font-weight:900;text-align:center;text-transform:uppercase;letter-spacing:.5px">DESBLOQUEIE O SEU ACESSO AGORA 👇</p>
-      <div style="background:#1a1a1a;border-radius:14px;padding:20px;width:100%;text-align:center;border:2px solid #c0121e">
-        <p style="color:#fff;font-weight:800;font-size:1rem;line-height:1.5">23 Técnicas Orgásmicas<br>+ 4 Bônus Exclusivos</p>
-        <p style="color:#888;font-size:.82rem;text-decoration:line-through;margin-top:10px">De R$ 97,00</p>
-        <p style="color:#fff;font-size:.88rem;font-weight:700">Por apenas</p>
-        <p style="color:#c0121e;font-size:2.8rem;font-weight:900;line-height:1.1">R$ 37,00</p>
-        <p style="color:#aaa;font-size:.78rem">à vista</p>
+    <div style="background:#0a0a0a;width:100%;padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:14px">
+      <p style="color:#fff;font-size:.88rem;font-weight:900;text-align:center;text-transform:uppercase;letter-spacing:.5px">DESBLOQUEIE O SEU ACESSO AGORA 👇</p>
+      <div style="background:#1a1a1a;border-radius:12px;padding:18px;width:100%;text-align:center;border:2px solid #c0121e">
+        <p style="color:#fff;font-weight:800;font-size:.95rem;line-height:1.5">23 Técnicas Orgásmicas<br>+ 4 Bônus Exclusivos</p>
+        <p style="color:#888;font-size:.8rem;text-decoration:line-through;margin-top:8px">De R$ 97,00</p>
+        <p style="color:#fff;font-size:.85rem;font-weight:700">Por apenas</p>
+        <p style="color:#c0121e;font-size:2.6rem;font-weight:900;line-height:1.1">R$ 37,00</p>
+        <p style="color:#aaa;font-size:.75rem">à vista</p>
       </div>
-
-      <!-- CARROSSEL DE IMAGENS -->
-      <div style="width:100%;overflow:hidden;border-radius:12px">
+      <div style="width:100%;overflow:hidden;border-radius:10px">
         <div id="carousel" style="display:flex;transition:transform .4s ease;will-change:transform">
-          <img src="https://doram.shop/wp-content/uploads/2026/03/lg-WCtkr-5.png" style="min-width:100%;object-fit:cover;border-radius:12px"/>
-          <img src="https://doram.shop/wp-content/uploads/2026/03/lg-hsmU4-4.png" style="min-width:100%;object-fit:cover;border-radius:12px"/>
-          <img src="https://doram.shop/wp-content/uploads/2026/03/lg-zVzKw-1.png" style="min-width:100%;object-fit:cover;border-radius:12px"/>
-          <img src="https://doram.shop/wp-content/uploads/2026/03/lg-xrZLC-2.png" style="min-width:100%;object-fit:cover;border-radius:12px"/>
+          <img src="https://doram.shop/wp-content/uploads/2026/03/lg-WCtkr-5.png" style="min-width:100%;display:block"/>
+          <img src="https://doram.shop/wp-content/uploads/2026/03/lg-hsmU4-4.png" style="min-width:100%;display:block"/>
+          <img src="https://doram.shop/wp-content/uploads/2026/03/lg-zVzKw-1.png" style="min-width:100%;display:block"/>
+          <img src="https://doram.shop/wp-content/uploads/2026/03/lg-xrZLC-2.png" style="min-width:100%;display:block"/>
         </div>
-        <div style="display:flex;justify-content:center;gap:6px;margin-top:8px" id="carousel-dots">
-          <span class="dot" style="width:8px;height:8px;border-radius:50%;background:#c0121e;display:inline-block"></span>
-          <span class="dot" style="width:8px;height:8px;border-radius:50%;background:#444;display:inline-block"></span>
-          <span class="dot" style="width:8px;height:8px;border-radius:50%;background:#444;display:inline-block"></span>
-          <span class="dot" style="width:8px;height:8px;border-radius:50%;background:#444;display:inline-block"></span>
+        <div style="display:flex;justify-content:center;gap:6px;margin-top:8px">
+          <span class="dot" style="width:7px;height:7px;border-radius:50%;background:#c0121e;display:inline-block"></span>
+          <span class="dot" style="width:7px;height:7px;border-radius:50%;background:#444;display:inline-block"></span>
+          <span class="dot" style="width:7px;height:7px;border-radius:50%;background:#444;display:inline-block"></span>
+          <span class="dot" style="width:7px;height:7px;border-radius:50%;background:#444;display:inline-block"></span>
         </div>
       </div>
-
-      <button class="btn" style="font-size:1rem;padding:22px;background:#27ae60;box-shadow:0 6px 0 #1a7a40;animation:pulsar 1.8s ease-in-out infinite"
-        onclick="window.open('https://pay.hotmart.com/SEU_LINK_AQUI','_blank')">
+      <button class="btn" style="font-size:.95rem;padding:20px;background:#27ae60;box-shadow:0 6px 0 #1a7a40;animation:pulsar 1.8s ease-in-out infinite" onclick="window.open('https://pay.hotmart.com/SEU_LINK_AQUI','_blank')">
         ACESSAR AGORA COM 70% DE DESCONTO
       </button>
+      <p style="color:#555;font-size:.7rem;text-align:center">🔒 Compra 100% Segura — SSL Criptografado</p>
     </div>
 
-    <!-- GARANTIA -->
-    <div style="background:#0d0d0d;width:100%;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
-      <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid #c0121e">
-        <div style="width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:2rem">🛡️</div>
-      </div>
-      <h3 style="color:#fff;font-size:1.1rem;font-weight:900">Garantia Incondicional de 30 dias</h3>
-      <p style="color:#fff;font-size:.95rem;font-weight:800">Garantimos 100% do seu Reembolso</p>
-      <p style="color:#aaa;font-size:.85rem;line-height:1.6">Acreditamos tanto nas nossas técnicas que estamos dispostos a devolver o seu dinheiro se você não tiver resultados, mas eu te digo, até hoje nunca tivemos um único reembolso!</p>
+    <div style="background:#0d0d0d;width:100%;padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+      <div style="width:72px;height:72px;border-radius:50%;background:#1a1a1a;border:3px solid #c0121e;display:flex;align-items:center;justify-content:center;font-size:1.8rem">🛡️</div>
+      <h3 style="color:#fff;font-size:1rem;font-weight:900">Garantia Incondicional de 30 dias</h3>
+      <p style="color:#aaa;font-size:.82rem;line-height:1.6">Se você não tiver resultados em 30 dias, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.</p>
     </div>
 
-    <!-- 3 PASSOS -->
-    <div style="background:#0a0a0a;width:100%;padding:28px 20px;display:flex;flex-direction:column;gap:14px">
-      <h2 style="color:#fff;font-size:1.1rem;font-weight:900;text-align:center;text-decoration:underline;text-underline-offset:4px">ACESSO EM 3 PASSOS</h2>
-      <div style="background:#fffde7;border-radius:12px;padding:16px">
-        <p style="color:#333;font-size:.9rem;font-weight:900;margin-bottom:6px">PASSO 1: ENVIO AUTOMÁTICO 📩</p>
-        <p style="color:#555;font-size:.85rem;line-height:1.5">Assim que sua inscrição for confirmada, nosso sistema envia o Link de Acesso Exclusivo diretamente para o seu <strong>E-mail e WhatsApp</strong>. É instantâneo.</p>
+    <div style="background:#0a0a0a;width:100%;padding:24px 18px;display:flex;flex-direction:column;gap:12px">
+      <h2 style="color:#fff;font-size:1rem;font-weight:900;text-align:center;text-decoration:underline;text-underline-offset:4px">ACESSO EM 3 PASSOS</h2>
+      <div style="background:#fffde7;border-radius:10px;padding:14px">
+        <p style="color:#333;font-size:.85rem;font-weight:900;margin-bottom:5px">PASSO 1: ENVIO AUTOMÁTICO 📩</p>
+        <p style="color:#555;font-size:.8rem;line-height:1.5">Pagamento confirmado — link enviado direto para o seu <strong>E-mail e WhatsApp</strong>. Instantâneo.</p>
       </div>
-      <div style="background:#fffde7;border-radius:12px;padding:16px">
-        <p style="color:#333;font-size:.9rem;font-weight:900;margin-bottom:6px">PASSO 2: LOGIN SIMPLIFICADO 🔑</p>
-        <p style="color:#555;font-size:.85rem;line-height:1.5">Clique no link e entre usando apenas o <strong>mesmo e-mail</strong> que você cadastrou na hora da compra. Sem burocracia ou senhas complicadas.</p>
+      <div style="background:#fffde7;border-radius:10px;padding:14px">
+        <p style="color:#333;font-size:.85rem;font-weight:900;margin-bottom:5px">PASSO 2: LOGIN SIMPLES 🔑</p>
+        <p style="color:#555;font-size:.8rem;line-height:1.5">Entre com o <strong>mesmo e-mail</strong> da compra. Sem senha complicada, sem burocracia.</p>
       </div>
-      <div style="background:#fffde7;border-radius:12px;padding:16px">
-        <p style="color:#333;font-size:.9rem;font-weight:900;margin-bottom:6px">PASSO 3: PRÁTICA IMEDIATA 📱</p>
-        <p style="color:#555;font-size:.85rem;line-height:1.5">Pronto! Você entra na nossa <strong>"Netflix Proibida"</strong> (igual à foto) e já pode assistir às aulas em vídeo no seu celular, tablet ou computador, onde e quando quiser.</p>
+      <div style="background:#fffde7;border-radius:10px;padding:14px">
+        <p style="color:#333;font-size:.85rem;font-weight:900;margin-bottom:5px">PASSO 3: ACESSO IMEDIATO 📱</p>
+        <p style="color:#555;font-size:.8rem;line-height:1.5">Você já começa a assistir no celular, tablet ou computador — onde e quando quiser.</p>
       </div>
-      <!-- RODAPÉ -->
-      <p style="color:#444;font-size:.72rem;text-align:center;padding-top:8px;padding-bottom:8px">Técnicas Orgásmicas 2025 © Todos os Direitos Reservados</p>
+      <p style="color:#333;font-size:.7rem;text-align:center;padding-top:6px">Técnicas Orgásmicas 2025 © Todos os Direitos Reservados</p>
     </div>
-
   </div>
 
-  <!-- TELA DE CARREGAMENTO -->
   <div id="loading-screen" style="display:none;position:fixed;inset:0;background:#000;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px">
     <p style="color:#fff;font-size:1rem;font-weight:800">Preparando seu acesso...</p>
-    <div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:8px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span id="loading-label" style="color:#c0121e;font-size:.82rem;font-weight:700">Carregando...</span>
-        <span id="loading-pct" style="color:#c0121e;font-size:.82rem;font-weight:700">0%</span>
+    <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;justify-content:space-between">
+        <span style="color:#c0121e;font-size:.8rem;font-weight:700">Carregando...</span>
+        <span id="loading-pct" style="color:#c0121e;font-size:.8rem;font-weight:700">0%</span>
       </div>
       <div style="width:100%;height:10px;background:#222;border-radius:99px;overflow:hidden">
         <div id="loading-bar" style="height:100%;width:0%;background:#c0121e;border-radius:99px;transition:width .1s linear"></div>
       </div>
     </div>
-    <p style="color:#f5c518;font-size:.85rem;font-weight:700;text-align:center;line-height:1.5">Aguarde um momento enquanto preparamos o seu Acesso Exclusivo</p>
+    <p style="color:#f5c518;font-size:.82rem;font-weight:700;text-align:center;line-height:1.5">Aguarde um momento enquanto preparamos<br>o seu Acesso Exclusivo</p>
   </div>
 
   <script>
     function goTo(id, progress) {
-      if (id === 's23') {
-        showLoading(() => {
-          showScreen('s23', progress);
-          startTimer();
-          startCarousel();
-        });
-        return;
-      }
+      document.querySelectorAll('.screen.active video').forEach(v => { v.pause(); v.currentTime = 0; });
+      document.querySelectorAll('.screen.active iframe').forEach(f => { var s = f.src; f.src = ''; f.src = s; });
+      if (id === 's23') { showLoading(() => { showScreen('s23', progress); startTimer(); startCarousel(); }); return; }
       showScreen(id, progress);
     }
-
     function showScreen(id, progress) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      const next = document.getElementById(id);
+      var next = document.getElementById(id);
       next.classList.add('active');
       next.style.animation = 'none';
-      requestAnimationFrame(() => { next.style.animation = ''; });
+      requestAnimationFrame(function() { next.style.animation = ''; });
       document.getElementById('progress').style.width = progress + '%';
-      window.scrollTo(0,0);
+      window.scrollTo(0, 0);
     }
-
     function showLoading(callback) {
-      const screen = document.getElementById('loading-screen');
-      const bar = document.getElementById('loading-bar');
-      const pct = document.getElementById('loading-pct');
+      var screen = document.getElementById('loading-screen');
+      var bar = document.getElementById('loading-bar');
+      var pct = document.getElementById('loading-pct');
       screen.style.display = 'flex';
-      let val = 0;
-      const iv = setInterval(() => {
-        val += Math.random() * 6 + 2;
+      var val = 0;
+      var iv = setInterval(function() {
+        val += Math.random() * 5 + 2;
         if (val >= 100) {
-          val = 100;
-          bar.style.width = '100%';
-          pct.textContent = '100%';
+          val = 100; bar.style.width = '100%'; pct.textContent = '100%';
           clearInterval(iv);
-          setTimeout(() => {
-            screen.style.display = 'none';
-            callback();
-          }, 300);
-        } else {
-          bar.style.width = val + '%';
-          pct.textContent = Math.floor(val) + '%';
-        }
+          setTimeout(function() { screen.style.display = 'none'; callback(); }, 300);
+        } else { bar.style.width = val + '%'; pct.textContent = Math.floor(val) + '%'; }
       }, 80);
     }
-
     function startTimer() {
-      let total = 10 * 60;
-      const el = document.getElementById('timer');
+      var total = 10 * 60;
+      var el = document.getElementById('timer');
       if (!el) return;
-      const iv = setInterval(() => {
+      var iv = setInterval(function() {
         if (total <= 0) { clearInterval(iv); el.textContent = '00:00'; return; }
         total--;
-        const m = String(Math.floor(total/60)).padStart(2,'0');
-        const s = String(total%60).padStart(2,'0');
-        el.textContent = m+':'+s;
+        el.textContent = String(Math.floor(total/60)).padStart(2,'0') + ':' + String(total%60).padStart(2,'0');
       }, 1000);
     }
-
     function startCarousel() {
-      const c = document.getElementById('carousel');
-      const dots = document.querySelectorAll('.dot');
+      var c = document.getElementById('carousel');
+      var dots = document.querySelectorAll('.dot');
       if (!c) return;
-      let idx = 0;
-      setInterval(() => {
+      var idx = 0;
+      setInterval(function() {
         idx = (idx + 1) % 4;
-        c.style.transform = `translateX(-${idx * 100}%)`;
-        dots.forEach((d,i) => d.style.background = i===idx ? '#c0121e' : '#444');
+        c.style.transform = 'translateX(-' + (idx * 100) + '%)';
+        dots.forEach(function(d,i) { d.style.background = i === idx ? '#c0121e' : '#444'; });
       }, 3000);
     }
   </script>
