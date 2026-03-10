@@ -603,21 +603,19 @@
   <div class="screen" id="s23">
 
     <!-- HERO -->
-    <div style="background:#0a0a0a;width:100%;padding:28px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">
-      <h1 style="font-family:'Montserrat',sans-serif;font-size:1.18rem;font-weight:900;line-height:1.45;text-align:center">
-        <span style="color:#fff">Descubra as </span><span style="color:#c0121e">23 Técnicas Secretas</span><br>
+    <div style="background:#000;width:100%;padding:24px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
+      <h1 style="font-size:1.05rem;font-weight:900;line-height:1.5;text-align:center;margin:0">
+        <span style="color:#fff">Descubra as </span><span style="color:#f5c518">23 Técnicas Secretas</span><br>
         <span style="color:#fff">para fazer qualquer mulher ter um</span><br>
-        <span style="color:#c0121e">orgasmo intenso (Squirt)</span> <span style="color:#fff">em menos</span><br>
+        <span style="color:#c0121e">orgasmo intenso (Squirt)</span><span style="color:#fff"> em menos</span><br>
         <span style="color:#fff">de 4 minutos</span>
       </h1>
-      <p style="color:#c0121e;font-size:.82rem;font-weight:800;font-style:italic">Assista abaixo a prévia de uma das aulas ⬇️</p>
-      <div style="width:100%;border-radius:10px;overflow:hidden;position:relative">
-        <video src="https://doram.shop/wp-content/uploads/2026/03/23-Tecnicas-3.mp4"
-          controls playsinline
-          style="width:100%;display:block;background:#111"></video>
-        <div style="position:absolute;top:8px;left:8px;background:#c0121e;color:#fff;font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:4px">● 173 assistindo</div>
+      <p style="color:#f5c518;font-size:.78rem;font-weight:700;font-style:italic;margin:0">Assista abaixo a prévia de uma das aulas ⬇️</p>
+      <div style="width:100%;border-radius:8px;overflow:hidden;position:relative">
+        <video src="https://doram.shop/wp-content/uploads/2026/03/23-Tecnicas-3.mp4" controls playsinline style="width:100%;display:block;background:#111"></video>
+        <div style="position:absolute;top:6px;left:6px;background:#c0121e;color:#fff;font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:4px">● 173 assistindo</div>
       </div>
-      <p style="color:#fff;font-size:.92rem;font-weight:800;line-height:1.55;text-align:center">Chega de sexo medíocre! Aprenda de verdade<br>como proporcionar orgasmos intensos e<br>prazerosos para a sua mulher.</p>
+      <p style="color:#fff;font-size:.88rem;font-weight:800;line-height:1.55;text-align:center;margin:0">Chega de sexo medíocre! Aprenda de verdade<br>como proporcionar orgasmos intensos e<br>prazerosos para a sua mulher.</p>
     </div>
 
     <!-- DEPOIMENTOS IMAGENS -->
@@ -790,12 +788,41 @@
         <p style="color:#333;font-size:.9rem;font-weight:900;margin-bottom:6px">PASSO 3: PRÁTICA IMEDIATA 📱</p>
         <p style="color:#555;font-size:.85rem;line-height:1.5">Pronto! Você entra na nossa <strong>"Netflix Proibida"</strong> (igual à foto) e já pode assistir às aulas em vídeo no seu celular, tablet ou computador, onde e quando quiser.</p>
       </div>
+      <!-- RODAPÉ -->
+      <p style="color:#444;font-size:.72rem;text-align:center;padding-top:8px;padding-bottom:8px">Técnicas Orgásmicas 2025 © Todos os Direitos Reservados</p>
     </div>
 
   </div>
 
+  <!-- TELA DE CARREGAMENTO -->
+  <div id="loading-screen" style="display:none;position:fixed;inset:0;background:#000;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px">
+    <p style="color:#fff;font-size:1rem;font-weight:800">Preparando seu acesso...</p>
+    <div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span id="loading-label" style="color:#c0121e;font-size:.82rem;font-weight:700">Carregando...</span>
+        <span id="loading-pct" style="color:#c0121e;font-size:.82rem;font-weight:700">0%</span>
+      </div>
+      <div style="width:100%;height:10px;background:#222;border-radius:99px;overflow:hidden">
+        <div id="loading-bar" style="height:100%;width:0%;background:#c0121e;border-radius:99px;transition:width .1s linear"></div>
+      </div>
+    </div>
+    <p style="color:#f5c518;font-size:.85rem;font-weight:700;text-align:center;line-height:1.5">Aguarde um momento enquanto preparamos o seu Acesso Exclusivo</p>
+  </div>
+
   <script>
     function goTo(id, progress) {
+      if (id === 's23') {
+        showLoading(() => {
+          showScreen('s23', progress);
+          startTimer();
+          startCarousel();
+        });
+        return;
+      }
+      showScreen(id, progress);
+    }
+
+    function showScreen(id, progress) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       const next = document.getElementById(id);
       next.classList.add('active');
@@ -803,7 +830,30 @@
       requestAnimationFrame(() => { next.style.animation = ''; });
       document.getElementById('progress').style.width = progress + '%';
       window.scrollTo(0,0);
-      if (id === 's23') { startTimer(); startCarousel(); }
+    }
+
+    function showLoading(callback) {
+      const screen = document.getElementById('loading-screen');
+      const bar = document.getElementById('loading-bar');
+      const pct = document.getElementById('loading-pct');
+      screen.style.display = 'flex';
+      let val = 0;
+      const iv = setInterval(() => {
+        val += Math.random() * 6 + 2;
+        if (val >= 100) {
+          val = 100;
+          bar.style.width = '100%';
+          pct.textContent = '100%';
+          clearInterval(iv);
+          setTimeout(() => {
+            screen.style.display = 'none';
+            callback();
+          }, 300);
+        } else {
+          bar.style.width = val + '%';
+          pct.textContent = Math.floor(val) + '%';
+        }
+      }, 80);
     }
 
     function startTimer() {
