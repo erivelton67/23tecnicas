@@ -52,13 +52,15 @@
     }
     .screen.active { display: flex; }
 
-    /* TELA VENDAS — ocupa 100vw ignorando padding do body */
+    /* TELA VENDAS — ocupa largura total */
     #s23 {
-      max-width: 100vw;
-      width: 100vw;
+      max-width: 100%;
+      width: calc(100% + 48px);
       margin-left: -24px;
+      margin-right: -24px;
       padding: 0 !important;
       gap: 0 !important;
+      align-items: stretch;
     }
 
     @keyframes fadeUp {
@@ -598,8 +600,7 @@
   </div>
 
   <!-- ══ TELA 23 — PÁGINA DE VENDAS ══ -->
-  <!-- ══ TELA 23 — PÁGINA DE VENDAS ══ -->
-  <div class="screen" id="s23" style="padding:0;gap:0;max-width:100%;width:100vw;margin-left:calc(-50vw + 50%);position:relative;left:50%;transform:translateX(-50%)">
+  <div class="screen" id="s23">
 
     <!-- HERO -->
     <div style="background:#0a0a0a;width:100%;padding:28px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">
